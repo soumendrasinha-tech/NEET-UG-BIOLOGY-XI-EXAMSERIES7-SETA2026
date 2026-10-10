@@ -1,0 +1,1392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soumendra Sir's Biology Classes - CBT Portal</title>
+    <!-- MathJax for rendering biological, chemical & mathematical formulas -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <!-- Chart.js for graphical performance feedback -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        :root {
+            --primary: #0056b3;
+            --secondary: #28a745;
+            --danger: #dc3545;
+            --warning: #ffc107;
+            --info: #17a2b8;
+            --light: #f8f9fa;
+            --dark: #343a40;
+        }
+
+        * {
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #eef2f5;
+            color: #333;
+        }
+
+        /* Anti-photography watermark overlay */
+        .watermark-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.12;
+            background: repeating-linear-gradient(
+                -45deg,
+                rgba(0, 0, 0, 0.15),
+                rgba(0, 0, 0, 0.15) 100px,
+                transparent 100px,
+                transparent 200px
+            );
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            align-content: space-around;
+            overflow: hidden;
+        }
+
+        .watermark-text {
+            font-size: 18px;
+            font-weight: bold;
+            color: #000;
+            transform: rotate(-25deg);
+            white-space: nowrap;
+        }
+
+        /* Header */
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 15px 20px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        header h2 {
+            margin: 5px 0 0 0;
+            font-size: 16px;
+            font-weight: 400;
+            color: #e0e0e0;
+        }
+
+        .container {
+            max-width: 1240px;
+            margin: 20px auto;
+            padding: 0 15px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 8px;
+            padding: 25px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+        }
+
+        .rules-list {
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        .captcha-box {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .captcha-code {
+            background: #e0e0e0;
+            padding: 10px 20px;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
+            font-size: 22px;
+            letter-spacing: 5px;
+            border-radius: 4px;
+            text-decoration: line-through;
+        }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .btn:hover {
+            background: #004085;
+        }
+
+        .btn-success { background: var(--secondary); }
+        .btn-success:hover { background: #218838; }
+
+        /* CBT Layout */
+        #cbt-interface {
+            display: none;
+        }
+
+        .cbt-layout {
+            display: grid;
+            grid-template-columns: 1fr 340px;
+            gap: 20px;
+        }
+
+        @media (max-width: 850px) {
+            .cbt-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .timer-bar {
+            background: var(--dark);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .timer-clock {
+            font-size: 20px;
+            color: #ffda6a;
+        }
+
+        .question-box {
+            min-height: 420px;
+        }
+
+        .question-number {
+            font-weight: bold;
+            color: var(--primary);
+            font-size: 18px;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+
+        .options-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .option-item {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+        }
+
+        .option-item:hover {
+            background: #e9ecef;
+        }
+
+        .option-item.selected {
+            background: #d4edda;
+            border-color: #c3e6cb;
+            font-weight: bold;
+        }
+
+        .option-item input {
+            margin-right: 12px;
+        }
+
+        /* Palette with Colourful Dots */
+        .palette-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .dots-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            max-height: 420px;
+            overflow-y: auto;
+            padding: 5px;
+        }
+
+        .dot {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 13px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: transform 0.1s;
+        }
+
+        .dot:hover {
+            transform: scale(1.1);
+        }
+
+        .dot.current {
+            border-color: var(--dark);
+        }
+
+        .dot.answered {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .dot.marked {
+            background: var(--warning);
+            color: black;
+        }
+
+        .dot.skipped {
+            background: var(--danger);
+            color: white;
+        }
+
+        .legend {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: 15px;
+            font-size: 12px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .legend-dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        /* Diagrams Styling */
+        .diagram-box {
+            background: #f0f4f8;
+            border: 1px dashed #0056b3;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 15px 0;
+            font-family: monospace;
+            white-space: pre-wrap;
+            line-height: 1.4;
+        }
+
+        /* Result View */
+        #result-interface {
+            display: none;
+        }
+
+        .score-card {
+            text-align: center;
+            padding: 20px;
+            background: #e9ecef;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .score-num {
+            font-size: 36px;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .chart-container {
+            position: relative;
+            max-width: 480px;
+            margin: 0 auto 30px auto;
+        }
+
+        #certificate-canvas {
+            display: none;
+        }
+    </style>
+</head>
+<body oncontextmenu="return false;">
+
+    <!-- Anti-Photography Watermark Layer -->
+    <div class="watermark-overlay" id="watermarkContainer"></div>
+
+    <header>
+        <h1>Soumendra Sir's Biology Classes-8910587106</h1>
+        <h2>NEET BIOLOGY XI EXAM SERIES 7 SET A</h2>
+    </header>
+
+    <div class="container">
+        <!-- AUTH & INSTRUCTIONS SCREEN -->
+        <div id="auth-interface" class="card">
+            <h3>Exam Instructions & Candidate Verification</h3>
+            <div class="rules-list">
+                <p><strong>Topic:</strong> Photosynthesis in Higher Plants (Photosynthesis as autotrophic nutrition, sites, pigments, light & dark reactions, photophosphorylation, chemiosmosis, photorespiration, C<sub>3</sub> & C<sub>4</sub> pathways, factors affecting photosynthesis)</p>
+                <p><strong>Total Questions:</strong> 90 Questions | <strong>Total Marks:</strong> 360 Marks</p>
+                <p><strong>Duration:</strong> 1 Hour (60 Minutes)</p>
+                <p><strong>Marking Scheme:</strong> +4 for Correct Answer, -1 for Incorrect Answer, 0 for Unattempted.</p>
+                <p><strong>Proctoring Rules & Security Enforcement:</strong></p>
+                <ul>
+                    <li>Fullscreen mode is strictly enforced upon test entry.</li>
+                    <li>Tab switching, window minimization, or app switching will trigger warning alerts. Exceeding 3 warnings will result in auto-submission.</li>
+                    <li>Text copying, pasting, cutting, and right-clicking are strictly disabled.</li>
+                    <li>Dynamic anti-photography security watermarks are rendered across the window.</li>
+                </ul>
+            </div>
+            <hr>
+            <form id="loginForm" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label>Candidate Full Name:</label>
+                    <input type="text" id="candidateName" required placeholder="Enter your full name">
+                </div>
+                <div class="form-group">
+                    <label>Exam Password (Today's Date in DDMMYYYY format):</label>
+                    <input type="password" id="examPassword" required placeholder="Enter DDMMYYYY">
+                </div>
+                <div class="form-group">
+                    <label>Security CAPTCHA:</label>
+                    <div class="captcha-box">
+                        <span class="captcha-code" id="captchaDisplay"></span>
+                        <button type="button" class="btn" onclick="generateCaptcha()" style="padding: 5px 10px;">Refresh</button>
+                    </div>
+                    <input type="text" id="captchaInput" required placeholder="Enter CAPTCHA shown above">
+                </div>
+                <button type="submit" class="btn btn-success" style="width: 100%;">Verify Credentials & Start CBT Test</button>
+            </form>
+        </div>
+
+        <!-- CBT EXAMINATION INTERFACE -->
+        <div id="cbt-interface">
+            <div class="timer-bar">
+                <span>Candidate: <span id="dispCandidateName"></span></span>
+                <span class="timer-clock">Time Remaining: <span id="timeDisplay">60:00</span></span>
+            </div>
+
+            <div class="cbt-layout">
+                <!-- Question Panel -->
+                <div class="card question-box">
+                    <div class="question-number" id="qNumberDisplay">Question 1</div>
+                    <div id="qTextDisplay" style="margin-bottom: 20px; line-height: 1.6;"></div>
+                    <div class="options-list" id="optionsContainer"></div>
+
+                    <div class="nav-buttons">
+                        <button class="btn" onclick="prevQuestion()">Previous</button>
+                        <button class="btn" style="background: var(--warning); color: black;" onclick="markForReview()">Mark for Review</button>
+                        <button class="btn" onclick="nextQuestion()">Next</button>
+                        <button class="btn btn-success" onclick="confirmSubmit()">Submit Exam</button>
+                    </div>
+                </div>
+
+                <!-- Palette with Colourful Dots -->
+                <div class="card">
+                    <div class="palette-title">Question Navigation Palette</div>
+                    <div class="dots-grid" id="dotsGrid"></div>
+
+                    <div class="legend">
+                        <div class="legend-item"><div class="legend-dot" style="background: var(--secondary);"></div> Answered</div>
+                        <div class="legend-item"><div class="legend-dot" style="background: var(--danger);"></div> Skipped</div>
+                        <div class="legend-item"><div class="legend-dot" style="background: var(--warning);"></div> Review</div>
+                        <div class="legend-item"><div class="legend-dot" style="background: #e0e0e0;"></div> Unvisited</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RESULT & PERFORMANCE REPORT SCREEN -->
+        <div id="result-interface" class="card">
+            <h2>NEET CBT Exam Feedback & Performance Report</h2>
+            <div class="score-card">
+                <div>Candidate Name: <strong id="resName"></strong></div>
+                <div class="score-num" id="resScore">0 / 360</div>
+                <div id="resBreakdown">Correct: 0 | Incorrect: 0 | Unattempted: 90</div>
+            </div>
+
+            <div class="chart-container">
+                <canvas id="feedbackChart"></canvas>
+            </div>
+
+            <div style="text-align: center; margin-top: 20px;">
+                <button class="btn btn-success" onclick="generateAndSendPNG()">Send Score Card to WhatsApp (8910587106)</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden Canvas for PNG Generation -->
+    <canvas id="certificate-canvas" width="800" height="600"></canvas>
+
+    <script>
+        // Master Question Bank: 90 Unique Questions on Photosynthesis
+        const rawQuestions = [
+            // -------------------------------------------------------------
+            // SECTION 1: STATEMENT-BASED QUESTIONS (20 Questions: 1 to 20)
+            // -------------------------------------------------------------
+            {
+                type: "statement",
+                text: "<b>Statement I:</b> Chlorophyll a is the primary photosynthetic pigment present in all oxygen-evolving photosynthetic organisms.<br><b>Statement II:</b> Chlorophyll b, xanthophylls, and carotenoids act as accessory pigments that protect chlorophyll a from photo-oxidation.",
+                options: ["Both Statement I and Statement II are correct", "Both Statement I and Statement II are incorrect", "Statement I is correct but Statement II is incorrect", "Statement I is incorrect but Statement II is correct"],
+                correct: 0
+            },
+            {
+                type: "statement",
+                text: "<b>Statement I:</b> Non-cyclic photophosphorylation involves both Photosystem I and Photosystem II working in series.<br><b>Statement II:</b> Cyclic photophosphorylation results in the formation of both ATP and NADPH + H<sup>+</sup>.",
+                options: ["Both Statement I and Statement II are correct", "Both Statement I and Statement II are incorrect", "Statement I is correct but Statement II is incorrect", "Statement I is incorrect but Statement II is correct"],
+                correct: 2
+            },
+            {
+                type: "statement",
+                text: "<b>Statement I:</b> The water-splitting complex associated with PS II is physically located on the stroma side of the thylakoid membrane.<br><b>Statement II:</b> Protons produced by photolysis of water accumulate in the lumen of the thylakoids.",
+                options: ["Both Statement I and Statement II are correct", "Both Statement I and Statement II are incorrect", "Statement I is correct but Statement II is incorrect", "Statement I is incorrect but Statement II is correct"],
+                correct: 3
+            },
+            {
+                type: "statement",
+                text: "<b>Statement I:</b> RuBisCO possesses both carboxylation and oxygenase activities.<br><b>Statement II:</b> When oxygen binds to RuBisCO, RuBP is converted into two molecules of 3-PGA.",
+                options: ["Both Statement I and Statement II are correct", "Both Statement I and Statement II are incorrect", "Statement I is correct but Statement II is incorrect", "Statement I is incorrect but Statement II is correct"],
+                correct: 2
+            },
+            {
+                type: "statement",
+                text: "<b>Statement I:</b> C<sub>4</sub> plants exhibit Kranz anatomy, characterized by large bundle sheath cells with thick walls and no intercellular spaces.<br><b>Statement II:</b> In C<sub>4</sub> plants, the primary CO<sub>2</sub> fixation occurs in the bundle sheath cells catalyzed by PEP carboxylase.",
+                options: ["Both Statement I and Statement II are correct", "Both Statement I and Statement II are incorrect", "Statement I is correct but Statement II is incorrect", "Statement I is incorrect but Statement II is correct"],
+                correct: 2
+            },
+            {
+                type: "statement",
+                text: "<b>Statement I:</b> According to Mitchell's chemiosmotic hypothesis, ATP synthesis requires a proton gradient across the thylakoid membrane.<br><b>Statement II:</b> The breakdown of the proton gradient occurs when protons move across the membrane into the lumen through the F<sub>0</sub> channel.",
+                options: ["Both Statement I and Statement II are correct", "Both Statement I and Statement II are incorrect", "Statement I is correct but Statement II is incorrect", "Statement I is incorrect but Statement II is correct"],
+                correct: 2
+            },
+            {
+                type: "statement",
+                text: "<b>Statement I:</b> Photorespiration is a wasteful process because it results in neither synthesis of sugar nor ATP.<br><b>Statement II:</b> In photorespiration, 25% of the fixed carbon is released as CO<sub>2</sub> in peroxisomes.",
+                options: ["Both Statement I and Statement II are correct", "Both Statement I and Statement II are incorrect", "Statement I is correct but Statement II is incorrect", "Statement I is incorrect but Statement II is correct"],
+                correct: 2
+            },
+            {
+                type: "statement",
+                text: "<b>Statement I:</b> The primary acceptor of CO<sub>2</sub> in C<sub>3</sub> plants is a 5-carbon ketose sugar called RuBP.<br><b>Statement II:</b> The primary CO<sub>2</sub> fixation product in C<sub>3</sub> plants is a 3-carbon organic acid called Phosphoglyceric acid (PGA).",
+                options: ["Both Statement I and Statement II are correct", "Both Statement I and Statement II are incorrect", "Statement I is correct but Statement II is incorrect", "Statement I is incorrect but Statement II is correct"],
+                correct: 0
+            },
+            {
+                type: "statement",
+                text: "<b>Statement I:</b> Light saturation for photosynthesis occurs at 10% of full sunlight.<br><b>Statement II:</b> Except for plants in shade or dense forests, light is rarely a limiting factor in nature.",
+                options: ["Both Statement I and Statement II are correct", "Both Statement I and Statement II are incorrect", "Statement I is correct but Statement II is incorrect", "Statement I is incorrect but Statement II is correct"],
+                correct: 0
+            },
+            {
+                type: "statement",
+                text: "<b>Statement I:</b> The bundle sheath cells of C<sub>4</sub> plants are rich in RuBisCO but lack PEPcase.<br><b>Statement II:</b> Mesophyll cells of C<sub>4</sub> plants lack RuBisCO but possess PEPcase.",
+                options: ["Both Statement I and Statement II are correct", "Both Statement I and Statement II are incorrect", "Statement I is correct but Statement II is incorrect", "Statement I is incorrect but Statement II is correct"],
+                correct: 0
+            },
+            {
+                type: "statement",
+                text: "<b>Statement I:</b> Cyclic photophosphorylation requires the functional presence of both PS I and PS II.<br><b>Statement II:</b> Cyclic electron flow occurs in the stroma lamellae membranes which lack PS II and NADP reductase.",
+                options: ["Both Statement I and Statement II are correct", "Both Statement I and Statement II are incorrect", "Statement I is correct but Statement II is incorrect", "Statement I is incorrect but Statement II is correct"],
+                correct: 3
+            },
+            {
+                type: "statement",
+                text: "<b>Statement I:</b> Synthesis of one molecule of glucose through the Calvin cycle requires 18 ATP and 12 NADPH.<br><b>Statement II:</b> Synthesis of one molecule of glucose in C<sub>4</sub> plants requires 30 ATP and 12 NADPH.",
+                options: ["Both Statement I and Statement II are correct", "Both Statement I and Statement II are incorrect", "Statement I is correct but Statement II is incorrect", "Statement I is incorrect but Statement II is correct"],
+                correct: 0
+            },
+            {
+                type: "statement",
+                text: "<b>Statement I:</b> Dark reactions of photosynthesis occur in the stroma of chloroplasts and are directly independent of light.<br><b>Statement II:</b> Dark reactions stop immediately if light is turned off and never restart.",
+                options: ["Both Statement I and Statement II are correct", "Both Statement I and Statement II are incorrect", "Statement I is correct but Statement II is incorrect", "Statement I is incorrect but Statement II is correct"],
+                correct: 2
+            },
+            {
+                type: "statement",
+                text: "<b>Statement I:</b> Joseph Priestley revealed the essential role of air in the growth of green plants using a bell jar setup.<br><b>Statement II:</b> Jan Ingenhousz showed that sunlight is essential to plant processes that purify air breathed by mice.",
+                options: ["Both Statement I and Statement II are correct", "Both Statement I and Statement II are incorrect", "Statement I is correct but Statement II is incorrect", "Statement I is incorrect but Statement II is correct"],
+                correct: 0
+            },
+            {
+                type: "statement",
+                text: "<b>Statement I:</b> Julius von Sachs provided evidence for the production of glucose when plants grow, which is stored as starch.<br><b>Statement II:</b> T.W. Engelmann used a green alga <i>Cladophora</i> and aerobic bacteria to discover the first action spectrum of photosynthesis.",
+                options: ["Both Statement I and Statement II are correct", "Both Statement I and Statement II are incorrect", "Statement I is correct but Statement II is incorrect", "Statement I is incorrect but Statement II is correct"],
+                correct: 0
+            },
+            {
+                type: "statement",
+                text: "<b>Statement I:</b> Cornelius van Niel demonstrated that oxygen evolved during photosynthesis comes from water, not carbon dioxide.<br><b>Statement II:</b> In purple and green sulfur bacteria, H<sub>2</sub>S acts as the hydrogen donor, yielding sulfur instead of oxygen.",
+                options: ["Both Statement I and Statement II are correct", "Both Statement I and Statement II are incorrect", "Statement I is correct but Statement II is incorrect", "Statement I is incorrect but Statement II is correct"],
+                correct: 0
+            },
+            {
+                type: "statement",
+                text: "<b>Statement I:</b> C<sub>4</sub> plants have a higher optimum temperature for photosynthesis than C<sub>3</sub> plants.<br><b>Statement II:</b> Tropical plants have a lower temperature optimum than temperate plants.",
+                options: ["Both Statement I and Statement II are correct", "Both Statement I and Statement II are incorrect", "Statement I is correct but Statement II is incorrect", "Statement I is incorrect but Statement II is correct"],
+                correct: 2
+            },
+            {
+                type: "statement",
+                text: "<b>Statement I:</b> Current atmospheric CO<sub>2</sub> concentration ($$380-450\\text{ ppm}$$) is limiting for C<sub>3</sub> plants.<br><b>Statement II:</b> C<sub>4</sub> plants show saturation at around $$360\\text{ ppm}$$ CO<sub>2</sub>.",
+                options: ["Both Statement I and Statement II are correct", "Both Statement I and Statement II are incorrect", "Statement I is correct but Statement II is incorrect", "Statement I is incorrect but Statement II is correct"],
+                correct: 0
+            },
+            {
+                type: "statement",
+                text: "<b>Statement I:</b> The C<sub>4</sub> acid Oxaloacetic acid (OAA) is formed in the bundle sheath cells.<br><b>Statement II:</b> Malic acid or Aspartic acid is transported from mesophyll cells to bundle sheath cells.",
+                options: ["Both Statement I and Statement II are correct", "Both Statement I and Statement II are incorrect", "Statement I is correct but Statement II is incorrect", "Statement I is incorrect but Statement II is correct"],
+                correct: 3
+            },
+            {
+                type: "statement",
+                text: "<b>Statement I:</b> The reaction center pigment in PS I absorbs maximum light at 700 nm.<br><b>Statement II:</b> The reaction center pigment in PS II absorbs maximum light at 680 nm.",
+                options: ["Both Statement I and Statement II are correct", "Both Statement I and Statement II are incorrect", "Statement I is correct but Statement II is incorrect", "Statement I is incorrect but Statement II is correct"],
+                correct: 0
+            },
+
+            // -------------------------------------------------------------
+            // SECTION 2: ASSERTION & REASONING QUESTIONS (20 Questions: 21 to 40)
+            // -------------------------------------------------------------
+            {
+                type: "assertion_reason",
+                text: "<b>Assertion (A):</b> C<sub>4</sub> plants are photosynthetically more efficient than C<sub>3</sub> plants at elevated temperatures.<br><b>Reason (R):</b> C<sub>4</sub> plants possess a mechanism that concentrates CO<sub>2</sub> at the RuBisCO enzyme site, minimizing photorespiration.",
+                options: ["Both (A) and (R) are true and (R) is the correct explanation of (A)", "Both (A) and (R) are true but (R) is NOT the correct explanation of (A)", "(A) is true but (R) is false", "(A) is false but (R) is true"],
+                correct: 0
+            },
+            {
+                type: "assertion_reason",
+                text: "<b>Assertion (A):</b> Protons accumulate in the thylakoid lumen during the light-dependent phase of photosynthesis.<br><b>Reason (R):</b> Photolysis of water occurs on the inner side of the thylakoid membrane, releasing $$H^+$$ into the lumen.",
+                options: ["Both (A) and (R) are true and (R) is the correct explanation of (A)", "Both (A) and (R) are true but (R) is NOT the correct explanation of (A)", "(A) is true but (R) is false", "(A) is false but (R) is true"],
+                correct: 0
+            },
+            {
+                type: "assertion_reason",
+                text: "<b>Assertion (A):</b> Cyclic photophosphorylation does not produce oxygen.<br><b>Reason (R):</b> Photolysis of water is associated exclusively with Photosystem II, which is absent in cyclic electron transport.",
+                options: ["Both (A) and (R) are true and (R) is the correct explanation of (A)", "Both (A) and (R) are true but (R) is NOT the correct explanation of (A)", "(A) is true but (R) is false", "(A) is false but (R) is true"],
+                correct: 0
+            },
+            {
+                type: "assertion_reason",
+                text: "<b>Assertion (A):</b> Photorespiration does not occur in C<sub>4</sub> plants.<br><b>Reason (R):</b> In C<sub>4</sub> plants, RuBisCO is located in mesophyll cells where oxygen concentration is maintained low.",
+                options: ["Both (A) and (R) are true and (R) is the correct explanation of (A)", "Both (A) and (R) are true but (R) is NOT the correct explanation of (A)", "(A) is true but (R) is false", "(A) is false but (R) is true"],
+                correct: 2
+            },
+            {
+                type: "assertion_reason",
+                text: "<b>Assertion (A):</b> The absorption spectrum of chlorophyll a aligns closely with the action spectrum of photosynthesis.<br><b>Reason (R):</b> Chlorophyll a is the chief pigment responsible for trapping light energy in plants.",
+                options: ["Both (A) and (R) are true and (R) is the correct explanation of (A)", "Both (A) and (R) are true but (R) is NOT the correct explanation of (A)", "(A) is true but (R) is false", "(A) is false but (R) is true"],
+                correct: 0
+            },
+            {
+                type: "assertion_reason",
+                text: "<b>Assertion (A):</b> Stroma lamellae membranes show non-cyclic photophosphorylation under continuous light.<br><b>Reason (R):</b> Stroma lamellae lack PS II as well as NADP reductase enzyme.",
+                options: ["Both (A) and (R) are true and (R) is the correct explanation of (A)", "Both (A) and (R) are true but (R) is NOT the correct explanation of (A)", "(A) is true but (R) is false", "(A) is false but (R) is true"],
+                correct: 3
+            },
+            {
+                type: "assertion_reason",
+                text: "<b>Assertion (A):</b> Tomato and bell pepper are C<sub>3</sub> greenhouse crops grown under CO<sub>2</sub>-enriched atmosphere for higher yields.<br><b>Reason (R):</b> C<sub>3</sub> plants respond to higher CO<sub>2</sub> concentrations by showing increased photosynthetic rates.",
+                options: ["Both (A) and (R) are true and (R) is the correct explanation of (A)", "Both (A) and (R) are true but (R) is NOT the correct explanation of (A)", "(A) is true but (R) is false", "(A) is false but (R) is true"],
+                correct: 0
+            },
+            {
+                type: "assertion_reason",
+                text: "<b>Assertion (A):</b> The primary acceptor of CO<sub>2</sub> in C<sub>4</sub> plants is Phosphoenolpyruvate (PEP).<br><b>Reason (R):</b> PEPcase enzyme is present in the mesophyll cells of C<sub>4</sub> leaves.",
+                options: ["Both (A) and (R) are true and (R) is the correct explanation of (A)", "Both (A) and (R) are true but (R) is NOT the correct explanation of (A)", "(A) is true but (R) is false", "(A) is false but (R) is true"],
+                correct: 0
+            },
+            {
+                type: "assertion_reason",
+                text: "<b>Assertion (A):</b> In C<sub>3</sub> plants, RuBisCO acts as an oxygenase under high light intensity and elevated O<sub>2</sub> levels.<br><b>Reason (R):</b> RuBisCO has a higher affinity for O<sub>2</sub> than for CO<sub>2</sub> under all physiological conditions.",
+                options: ["Both (A) and (R) are true and (R) is the correct explanation of (A)", "Both (A) and (R) are true but (R) is NOT the correct explanation of (A)", "(A) is true but (R) is false", "(A) is false but (R) is true"],
+                correct: 2
+            },
+            {
+                type: "assertion_reason",
+                text: "<b>Assertion (A):</b> Water stress reduces the rate of photosynthesis in green leaves.<br><b>Reason (R):</b> Water stress causes stomatal closure, reducing CO<sub>2</sub> availability and making leaves wilt.",
+                options: ["Both (A) and (R) are true and (R) is the correct explanation of (A)", "Both (A) and (R) are true but (R) is NOT the correct explanation of (A)", "(A) is true but (R) is false", "(A) is false but (R) is true"],
+                correct: 0
+            },
+            {
+                type: "assertion_reason",
+                text: "<b>Assertion (A):</b> The ATP synthase enzyme consists of two parts: F<sub>0</sub> and F<sub>1</sub>.<br><b>Reason (R):</b> F<sub>1</sub> is embedded in the thylakoid membrane and acts as a transmembrane proton channel.",
+                options: ["Both (A) and (R) are true and (R) is the correct explanation of (A)", "Both (A) and (R) are true but (R) is NOT the correct explanation of (A)", "(A) is true but (R) is false", "(A) is false but (R) is true"],
+                correct: 2
+            },
+            {
+                type: "assertion_reason",
+                text: "<b>Assertion (A):</b> Carotenoids are known as shield pigments.<br><b>Reason (R):</b> Carotenoids absorb light in the blue-green spectrum and prevent photo-oxidative damage to chlorophyll a.",
+                options: ["Both (A) and (R) are true and (R) is the correct explanation of (A)", "Both (A) and (R) are true but (R) is NOT the correct explanation of (A)", "(A) is true but (R) is false", "(A) is false but (R) is true"],
+                correct: 0
+            },
+            {
+                type: "assertion_reason",
+                text: "<b>Assertion (A):</b> Fixation of one CO<sub>2</sub> in Calvin cycle requires 3 ATP and 2 NADPH.<br><b>Reason (R):</b> Two ATPs are used in reduction and one ATP is used in regeneration of RuBP.",
+                options: ["Both (A) and (R) are true and (R) is the correct explanation of (A)", "Both (A) and (R) are true but (R) is NOT the correct explanation of (A)", "(A) is true but (R) is false", "(A) is false but (R) is true"],
+                correct: 0
+            },
+            {
+                type: "assertion_reason",
+                text: "<b>Assertion (A):</b> Bundle sheath cells of C<sub>4</sub> plants are agranal.<br><b>Reason (R):</b> Agranal chloroplasts lack grana and possess only stroma lamellae.",
+                options: ["Both (A) and (R) are true and (R) is the correct explanation of (A)", "Both (A) and (R) are true but (R) is NOT the correct explanation of (A)", "(A) is true but (R) is false", "(A) is false but (R) is true"],
+                correct: 1
+            },
+            {
+                type: "assertion_reason",
+                text: "<b>Assertion (A):</b> The pH inside the thylakoid lumen drops during active light reaction.<br><b>Reason (R):</b> Accumulation of protons inside the lumen increases hydrogen ion concentration.",
+                options: ["Both (A) and (R) are true and (R) is the correct explanation of (A)", "Both (A) and (R) are true but (R) is NOT the correct explanation of (A)", "(A) is true but (R) is false", "(A) is false but (R) is true"],
+                correct: 0
+            },
+            {
+                type: "assertion_reason",
+                text: "<b>Assertion (A):</b> Magnesium is an essential mineral element for photosynthesis.<br><b>Reason (R):</b> Magnesium forms the central core atom of the porphyrin ring in chlorophyll molecules.",
+                options: ["Both (A) and (R) are true and (R) is the correct explanation of (A)", "Both (A) and (R) are true but (R) is NOT the correct explanation of (A)", "(A) is true but (R) is false", "(A) is false but (R) is true"],
+                correct: 0
+            },
+            {
+                type: "assertion_reason",
+                text: "<b>Assertion (A):</b> Oxygen evolving complex (OEC) requires manganese and chloride ions.<br><b>Reason (R):</b> Mn<sup>2+</sup> and Cl<sup>-</sup> ions participate in catalytic oxidation of water during photolysis.",
+                options: ["Both (A) and (R) are true and (R) is the correct explanation of (A)", "Both (A) and (R) are true but (R) is NOT the correct explanation of (A)", "(A) is true but (R) is false", "(A) is false but (R) is true"],
+                correct: 0
+            },
+            {
+                type: "assertion_reason",
+                text: "<b>Assertion (A):</b> Law of Limiting Factors was proposed by F.F. Blackman in 1905.<br><b>Reason (R):</b> Blackman stated that if a chemical process is affected by more than one factor, its rate is determined by the factor nearest to its minimum value.",
+                options: ["Both (A) and (R) are true and (R) is the correct explanation of (A)", "Both (A) and (R) are true but (R) is NOT the correct explanation of (A)", "(A) is true but (R) is false", "(A) is false but (R) is true"],
+                correct: 0
+            },
+            {
+                type: "assertion_reason",
+                text: "<b>Assertion (A):</b> Dark reactions are also known as biosynthetic phase of photosynthesis.<br><b>Reason (R):</b> Biosynthetic phase involves enzymatic synthesis of carbohydrates using ATP and NADPH.",
+                options: ["Both (A) and (R) are true and (R) is the correct explanation of (A)", "Both (A) and (R) are true but (R) is NOT the correct explanation of (A)", "(A) is true but (R) is false", "(A) is false but (R) is true"],
+                correct: 0
+            },
+            {
+                type: "assertion_reason",
+                text: "<b>Assertion (A):</b> Chlorophyll b appears yellow-green in paper chromatograms.<br><b>Reason (R):</b> Chlorophyll a appears bright green or blue-green in paper chromatograms.",
+                options: ["Both (A) and (R) are true and (R) is the correct explanation of (A)", "Both (A) and (R) are true but (R) is NOT the correct explanation of (A)", "(A) is true but (R) is false", "(A) is false but (R) is true"],
+                correct: 1
+            },
+
+            // -------------------------------------------------------------
+            // SECTION 3: CASE STUDY QUESTIONS (20 Questions: 41 to 60)
+            // -------------------------------------------------------------
+            // Case 1: Chemiosmosis & Proton Gradient
+            {
+                type: "case_study",
+                text: "<b>Case Study 1: Chemiosmotic Hypothesis</b><br>In 1961, Peter Mitchell proposed the chemiosmotic mechanism for ATP synthesis. In chloroplasts, proton accumulation in the thylakoid lumen creates a proton gradient across the thylakoid membrane.<br><br><b>Question 41:</b> Which of the following processes does NOT contribute directly to proton accumulation in the thylakoid lumen?",
+                options: ["Photolysis of water on the inner side of thylakoid membrane", "Primary electron acceptor transferring proton from stroma to lumen", "Reduction of NADP<sup>+</sup> on the stroma side of membrane", "Decarboxylation of malic acid in the stroma"],
+                correct: 3
+            },
+            {
+                type: "case_study",
+                text: "<b>Case Study 1 (Contd.):</b><br><b>Question 42:</b> Breakthrough of the proton gradient occurs through ATP synthase channel. What conformational change triggers ATP synthesis in F<sub>1</sub> particle?",
+                options: ["Pumping of protons into lumen", "Passage of protons through F<sub>0</sub> channel causing rotation of F<sub>1</sub> headpiece", "Reduction of RuBP", "Oxidation of NADPH"],
+                correct: 1
+            },
+            {
+                type: "case_study",
+                text: "<b>Case Study 1 (Contd.):</b><br><b>Question 43:</b> If a thylakoid membrane is artificially made permeable to protons ($$H^+$$), what will be the immediate impact on light reactions?",
+                options: ["Electron transport will stop completely", "ATP synthesis will cease despite active electron transport", "Oxygen evolution will stop", "NADP<sup>+</sup> reduction will stop"],
+                correct: 1
+            },
+            {
+                type: "case_study",
+                text: "<b>Case Study 1 (Contd.):</b><br><b>Question 44:</b> Which enzyme catalyzes the formation of NADPH on the stroma side using electrons from PS I?",
+                options: ["ATP synthase", "RuBisCO", "NADP reductase", "PEP carboxylase"],
+                correct: 2
+            },
+            {
+                type: "case_study",
+                text: "<b>Case Study 1 (Contd.):</b><br><b>Question 45:</b> What is the net direction of proton movement when ATP is synthesized by ATP synthase in chloroplasts?",
+                options: ["From stroma into thylakoid lumen", "From thylakoid lumen into stroma", "From intermembrane space into matrix", "From cytoplasm into chloroplast stroma"],
+                correct: 1
+            },
+
+            // Case 2: C4 Photosynthetic Pathway
+            {
+                type: "case_study",
+                text: "<b>Case Study 2: C<sub>4</sub> Pathway & Kranz Anatomy</b><br>Tropical plants like Maize, Sugarcane, and Sorghum have evolved the Hatch-Slack (C<sub>4</sub>) pathway to thrive under high light intensity and temperature.<br><br><b>Question 46:</b> What is the primary 4-carbon acid produced after initial CO<sub>2</sub> fixation in C<sub>4</sub> plants?",
+                options: ["Phosphoglyceric acid (PGA)", "Oxaloacetic acid (OAA)", "Malic acid", "Aspartic acid"],
+                correct: 1
+            },
+            {
+                type: "case_study",
+                text: "<b>Case Study 2 (Contd.):</b><br><b>Question 47:</b> Decarboxylation of C<sub>4</sub> acid takes place in which cellular compartment of C<sub>4</sub> plants?",
+                options: ["Mesophyll cell cytoplasm", "Mesophyll chloroplast stroma", "Bundle sheath chloroplast stroma", "Bundle sheath cell vacuole"],
+                correct: 2
+            },
+            {
+                type: "case_study",
+                text: "<b>Case Study 2 (Contd.):</b><br><b>Question 48:</b> What happens to the 3-carbon pyruvate formed after decarboxylation in bundle sheath cells?",
+                options: ["It is converted to glucose", "It is transported back to mesophyll cells to regenerate PEP", "It enters the mitochondria for Krebs cycle", "It is excreted through stomata"],
+                correct: 1
+            },
+            {
+                type: "case_study",
+                text: "<b>Case Study 2 (Contd.):</b><br><b>Question 49:</b> Why do C<sub>4</sub> plants exhibit greater photosynthetic productivity than C<sub>3</sub> plants?",
+                options: ["They lack RuBisCO enzyme", "They undergo photorespiration at a faster rate", "They maintain high CO<sub>2</sub> concentration at RuBisCO site avoiding photorespiration", "They absorb green light efficiently"],
+                correct: 2
+            },
+            {
+                type: "case_study",
+                text: "<b>Case Study 2 (Contd.):</b><br><b>Question 50:</b> How many total ATP molecules are required to produce one hexose glucose molecule in a C<sub>4</sub> plant?",
+                options: ["18 ATP", "30 ATP", "12 ATP", "24 ATP"],
+                correct: 1
+            },
+
+            // Case 3: Calvin Cycle (C3 Pathway)
+            {
+                type: "case_study",
+                text: "<b>Case Study 3: The Calvin-Benson Cycle</b><br>Melvin Calvin used radioactive <sup>14</sup>C in algal photosynthesis studies to trace the path of carbon during the dark phase.<br><br><b>Question 51:</b> What are the three fundamental stages of the Calvin cycle in correct sequence?",
+                options: ["Reduction -> Carboxylation -> Regeneration", "Carboxylation -> Reduction -> Regeneration", "Regeneration -> Carboxylation -> Reduction", "Carboxylation -> Regeneration -> Reduction"],
+                correct: 1
+            },
+            {
+                type: "case_study",
+                text: "<b>Case Study 3 (Contd.):</b><br><b>Question 52:</b> To synthesize 6 molecules of 3-PGA, how many CO<sub>2</sub> molecules must be fixed by RuBisCO?",
+                options: ["3 molecules", "6 molecules", "1 molecule", "12 molecules"],
+                correct: 0
+            },
+            {
+                type: "case_study",
+                text: "<b>Case Study 3 (Contd.):</b><br><b>Question 53:</b> Regeneration of 6 molecules of RuBP from triose phosphates in Calvin cycle consumes how many ATPs?",
+                options: ["6 ATP", "12 ATP", "18 ATP", "3 ATP"],
+                correct: 0
+            },
+            {
+                type: "case_study",
+                text: "<b>Case Study 3 (Contd.):</b><br><b>Question 54:</b> What is the reduction phase requirement per fixed CO<sub>2</sub> molecule in Calvin cycle?",
+                options: ["2 ATP + 2 NADPH", "3 ATP + 2 NADPH", "1 ATP + 1 NADPH", "2 ATP + 3 NADPH"],
+                correct: 0
+            },
+            {
+                type: "case_study",
+                text: "<b>Case Study 3 (Contd.):</b><br><b>Question 55:</b> If NADPH supply is artificially restricted, which stage of Calvin cycle will be directly blocked?",
+                options: ["Carboxylation of RuBP", "Reduction of 3-PGA to Triose phosphate", "Regeneration of RuBP", "Transport of sucrose"],
+                correct: 1
+            },
+
+            // Case 4: Photosynthetic Pigments & Light Spectrum
+            {
+                type: "case_study",
+                text: "<b>Case Study 4: Action and Absorption Spectra</b><br>Chromatographic separation of photosynthetic pigments shows four distinct pigments in green leaves.<br><br><b>Question 56:</b> Which color corresponds to Xanthophyll on a paper chromatogram?",
+                options: ["Blue green", "Yellow green", "Yellow", "Yellow to yellow-orange"],
+                correct: 2
+            },
+            {
+                type: "case_study",
+                text: "<b>Case Study 4 (Contd.):</b><br><b>Question 57:</b> At which wavelengths of light does maximum photosynthesis occur in green plants?",
+                options: ["Green and Yellow regions", "Blue and Red regions", "UV and Infrared regions", "Far-red region only"],
+                correct: 1
+            },
+            {
+                type: "case_study",
+                text: "<b>Case Study 4 (Contd.):</b><br><b>Question 58:</b> What is the role of Reaction Center in a Photosystem (LHC)?",
+                options: ["It contains hundreds of pigment molecules bound to proteins", "It consists of a single Chlorophyll a molecule that executes photochemical electron transfer", "It absorbs green light exclusively", "It pumps protons across membrane"],
+                correct: 1
+            },
+            {
+                type: "case_study",
+                text: "<b>Case Study 4 (Contd.):</b><br><b>Question 59:</b> Light Harvesting Complexes (LHC) are made of hundreds of pigment molecules. What are these pigments called except single chlorophyll a?",
+                options: ["Reaction centers", "Antennae pigments", "Enzymatic pigments", "Secondary acceptors"],
+                correct: 1
+            },
+            {
+                type: "case_study",
+                text: "<b>Case Study 4 (Contd.):</b><br><b>Question 60:</b> Which photosynthetic pigment appears yellow to yellow-orange in paper chromatography?",
+                options: ["Chlorophyll a", "Chlorophyll b", "Xanthophyll", "Carotenoids"],
+                correct: 3
+            },
+
+            // -------------------------------------------------------------
+            // SECTION 4: CRITICAL THINKING & NUMERICAL QUESTIONS (25 Questions: 61 to 85)
+            // -------------------------------------------------------------
+            {
+                type: "numerical",
+                text: "Calculate the total number of ATP and NADPH required for the net synthesis of 5 molecules of Glucose in C<sub>3</sub> plants.",
+                options: ["90 ATP and 60 NADPH", "150 ATP and 60 NADPH", "60 ATP and 30 NADPH", "180 ATP and 120 NADPH"],
+                correct: 0
+            },
+            {
+                type: "numerical",
+                text: "How many turns of the Calvin cycle and how many CO<sub>2</sub> molecules are required to produce 1 molecule of Fructose-6-phosphate?",
+                options: ["6 turns and 6 CO<sub>2</sub>", "3 turns and 3 CO<sub>2</sub>", "12 turns and 12 CO<sub>2</sub>", "1 turn and 1 CO<sub>2</sub>"],
+                correct: 0
+            },
+            {
+                type: "numerical",
+                text: "In a C<sub>4</sub> plant, calculate the extra number of ATP molecules spent compared to a C<sub>3</sub> plant to fix 12 molecules of CO<sub>2</sub> into glucose.",
+                options: ["24 ATP", "12 ATP", "36 ATP", "60 ATP"],
+                correct: 0
+            },
+            {
+                type: "numerical",
+                text: "If 12 water molecules undergo photolysis during non-cyclic photophosphorylation, how many O<sub>2</sub> molecules, protons ($$H^+$$), and electrons ($$e^-$$) are produced?",
+                options: ["3 O<sub>2</sub>, 24 H<sup>+</sup>, 24 e<sup>-</sup>", "6 O<sub>2</sub>, 24 H<sup>+</sup>, 24 e<sup>-</sup>", "12 O<sub>2</sub>, 12 H<sup>+</sup>, 12 e<sup>-</sup>", "6 O<sub>2</sub>, 12 H<sup>+</sup>, 12 e<sup>-</sup>"],
+                correct: 1
+            },
+            {
+                type: "numerical",
+                text: "During non-cyclic photophosphorylation, for every pair of electrons transported from H<sub>2</sub>O to NADP<sup>+</sup>, how many NADPH molecules are synthesized?",
+                options: ["1 NADPH", "2 NADPH", "3 NADPH", "4 NADPH"],
+                correct: 0
+            },
+            {
+                type: "numerical",
+                text: "How many ATP molecules are consumed during the carboxylation and reduction steps alone for producing 2 molecules of Sucrose (C<sub>12</sub>H<sub>22</sub>O<sub>11</sub>) in C<sub>3</sub> plants?",
+                options: ["48 ATP", "72 ATP", "96 ATP", "24 ATP"],
+                correct: 0
+            },
+            {
+                type: "numerical",
+                text: "If a green plant fixes 30 molecules of CO<sub>2</sub> via C<sub>3</sub> pathway, how many molecules of 3-PGA and Triose phosphate are generated during the process?",
+                options: ["60 PGA and 60 Triose phosphate", "30 PGA and 30 Triose phosphate", "15 PGA and 15 Triose phosphate", "120 PGA and 60 Triose phosphate"],
+                correct: 0
+            },
+            {
+                type: "numerical",
+                text: "Calculate the total ATP cost for fixing 6 CO<sub>2</sub> in sugarcane plant (C<sub>4</sub>).",
+                options: ["30 ATP", "18 ATP", "12 ATP", "24 ATP"],
+                correct: 0
+            },
+            {
+                type: "numerical",
+                text: "Suppose a mutant C<sub>3</sub> plant has RuBisCO with equal affinity for CO<sub>2</sub> and O<sub>2</sub>. At equal partial pressures of CO<sub>2</sub> and O<sub>2</sub>, what fraction of RuBP will enter photorespiration?",
+                options: ["50%", "100%", "25%", "75%"],
+                correct: 0
+            },
+            {
+                type: "numerical",
+                text: "How many photons of light are quantum-mechanically estimated to be absorbed to evolve 1 molecule of O<sub>2</sub> during non-cyclic electron flow?",
+                options: ["8 photons", "4 photons", "2 photons", "12 photons"],
+                correct: 0
+            },
+            {
+                type: "numerical",
+                text: "In C<sub>4</sub> plants, regeneration of PEP from pyruvate in mesophyll cells consumes how many ATP equivalents per CO<sub>2</sub> fixed?",
+                options: ["2 ATP (AMP to ATP conversion)", "1 ATP", "3 ATP", "0 ATP"],
+                correct: 0
+            },
+            {
+                type: "numerical",
+                text: "If 100 molecules of RuBP react with 100 molecules of O<sub>2</sub> in photorespiration, how many molecules of 3-PGA and 2-Phosphoglycolate are formed?",
+                options: ["100 PGA and 100 Phosphoglycolate", "200 PGA and 100 Phosphoglycolate", "50 PGA and 50 Phosphoglycolate", "100 PGA and 200 Phosphoglycolate"],
+                correct: 0
+            },
+            {
+                type: "numerical",
+                text: "How many CO<sub>2</sub> molecules are lost per 4 molecules of 2-phosphoglycolate entering the photorespiratory carbon oxidation cycle (C<sub>2</sub> cycle)?",
+                options: ["1 CO<sub>2</sub>", "2 CO<sub>2</sub>", "4 CO<sub>2</sub>", "3 CO<sub>2</sub>"],
+                correct: 0
+            },
+            {
+                type: "numerical",
+                text: "What is the net gain of ATP directly generated in stroma per 12 electrons transferred through non-cyclic photophosphorylation assuming 1 ATP per 4 H<sup>+</sup> translocated?",
+                options: ["6 to 9 ATP", "12 ATP", "3 ATP", "18 ATP"],
+                correct: 0
+            },
+            {
+                type: "numerical",
+                text: "Calculate the ratio of ATP : NADPH required for Calvin cycle in C<sub>3</sub> plants.",
+                options: ["3 : 2", "1 : 1", "2 : 1", "5 : 2"],
+                correct: 0
+            },
+            {
+                type: "numerical",
+                text: "Calculate the ratio of ATP : NADPH required for total CO<sub>2</sub> fixation in C<sub>4</sub> plants.",
+                options: ["5 : 2", "3 : 2", "2 : 1", "1 : 1"],
+                correct: 0
+            },
+            {
+                type: "numerical",
+                text: "In a laboratory experiment, an isolated chloroplast illuminated in a medium with ADP and Pi accumulates protons inside lumen. If pH of lumen is 4.0 and stroma pH is 8.0, what is the proton concentration gradient ($$\\Delta pH$$)?",
+                options: ["4.0 pH units (10,000-fold difference)", "2.0 pH units", "12.0 pH units", "1.0 pH unit"],
+                correct: 0
+            },
+            {
+                type: "numerical",
+                text: "How many molecules of NADPH are required to produce 3 molecules of Maltose (C<sub>12</sub>H<sub>22</sub>O<sub>11</sub>) via photosynthetic dark reaction?",
+                options: ["72 NADPH", "36 NADPH", "24 NADPH", "48 NADPH"],
+                correct: 0
+            },
+            {
+                type: "numerical",
+                text: "If 24 NADPH are consumed during Calvin cycle, how many molecules of CO<sub>2</sub> were fixed and how many ATPs were consumed in total?",
+                options: ["12 CO<sub>2</sub> and 36 ATP", "6 CO<sub>2</sub> and 18 ATP", "24 CO<sub>2</sub> and 48 ATP", "12 CO<sub>2</sub> and 24 ATP"],
+                correct: 0
+            },
+            {
+                type: "numerical",
+                text: "A leaf absorbs 1000 Joules of light energy. If photosynthetic efficiency is 5%, how much energy in Joules is converted into chemical energy stored in carbohydrates?",
+                options: ["50 Joules", "5 Joules", "500 Joules", "200 Joules"],
+                correct: 0
+            },
+            {
+                type: "numerical",
+                text: "If 12 molecules of PGA undergo reduction phase, how many molecules of ATP and NADPH are consumed?",
+                options: ["12 ATP and 12 NADPH", "6 ATP and 6 NADPH", "24 ATP and 12 NADPH", "12 ATP and 24 NADPH"],
+                correct: 0
+            },
+            {
+                type: "numerical",
+                text: "How many ATPs are required for the regeneration of RuBP to fix 18 CO<sub>2</sub> molecules in C<sub>3</sub> plants?",
+                options: ["18 ATP", "36 ATP", "54 ATP", "12 ATP"],
+                correct: 0
+            },
+            {
+                type: "numerical",
+                text: "How many molecules of Phosphoenolpyruvate (PEP) are required to fix 6 molecules of CO<sub>2</sub> in C<sub>4</sub> plants?",
+                options: ["6 PEP", "12 PEP", "3 PEP", "1 PEP"],
+                correct: 0
+            },
+            {
+                type: "numerical",
+                text: "In photorespiration, 2 molecules of Glycine (2-carbon) combine in mitochondria to form 1 molecule of Serine (3-carbon). How many CO<sub>2</sub> and NH<sub>3</sub> are released?",
+                options: ["1 CO<sub>2</sub> and 1 NH<sub>3</sub>", "2 CO<sub>2</sub> and 2 NH<sub>3</sub>", "1 CO<sub>2</sub> and 0 NH<sub>3</sub>", "0 CO<sub>2</sub> and 1 NH<sub>3</sub>"],
+                correct: 0
+            },
+            {
+                type: "numerical",
+                text: "Calculate the net efficiency percentage difference in ATP usage between C<sub>3</sub> and C<sub>4</sub> plant for producing 1 mole of glucose. (C<sub>3</sub> = 18 ATP, C<sub>4</sub> = 30 ATP).",
+                options: ["66.6% additional ATP spent by C4", "33.3% additional ATP spent by C4", "50% additional ATP spent by C4", "100% additional ATP spent by C4"],
+                correct: 0
+            },
+
+            // -------------------------------------------------------------
+            // SECTION 5: DIAGRAM-BASED QUESTIONS (5 Questions: 86 to 90)
+            // -------------------------------------------------------------
+            {
+                type: "diagram",
+                text: "<b>Diagram Question 86: Z-Scheme of Light Reaction</b><br><div class='diagram-box'>[ Light ] -> [ PS II (P680) ] --(Electron Acceptor [A])--> [ Electron Transport System [B] ] -> [ PS I (P700) ] --(Electron Acceptor [C])--> [ NADP+ Reductase [D] ]</div><br>Identify the correct labels for <b>[A]</b> and <b>[D]</b> in the Z-scheme:",
+                options: ["[A] Primary Electron Acceptor (Pheophytin), [D] NADPH + H<sup>+</sup>", "[A] Plastocyanin, [D] ATP Synthase", "[A] Ferredoxin, [D] RuBisCO", "[A] Cytochrome b6f, [D] PEPcase"],
+                correct: 0
+            },
+            {
+                type: "diagram",
+                text: "<b>Diagram Question 87: Chloroplast Structure</b><br><div class='diagram-box'>+----------------------------------------+<br>| Chloroplast Outer Membrane             |<br>|   +----------------------------------+ |<br>|   | Stroma [A]                      | |<br>|   |  [ Stack of Thylakoids ] -> [B]  | |<br>|   |  [ Connecting Membrane ] -> [C] | |<br>+---+----------------------------------+-+</div><br>Identify labels <b>[A]</b>, <b>[B]</b>, and <b>[C]</b>:",
+                options: ["[A] Stroma, [B] Granum, [C] Stroma Lamella", "[A] Matrix, [B] Cristae, [C] Inner membrane", "[A] Lumen, [B] Thylakoid, [C] Grana", "[A] Cytoplasm, [B] Stroma, [C] Granum"],
+                correct: 0
+            },
+            {
+                type: "diagram",
+                text: "<b>Diagram Question 88: Hatch and Slack Pathway</b><br><div class='diagram-box'>MESOPHYLL CELL:  HCO3- + PEP --(Enzyme [X])--> OAA -> C4 acid<br>                                                        |<br>                                                   (Transport)<br>                                                        v<br>BUNDLE SHEATH:   C4 acid --(Decarboxylation)--> CO2 + C3 acid<br>                                                  |<br>                                            (Fixed by [Y])</div><br>Identify Enzymes <b>[X]</b> and <b>[Y]</b>:",
+                options: ["[X] PEP carboxylase (PEPcase), [Y] RuBisCO", "[X] RuBisCO, [Y] PEPcase", "[X] ATP synthase, [Y] NADP reductase", "[X] Carbonic anhydrase, [Y] Pyruvate kinase"],
+                correct: 0
+            },
+            {
+                type: "diagram",
+                text: "<b>Diagram Question 89: ATP Synthase in Thylakoid Membrane</b><br><div class='diagram-box'>LUMEN (High H+) <--- [ Membrane Embedded Channel [F0] ] <--- [ Headpiece [F1] ] ---> STROMA (Low H+ / Synthesis of ATP)</div><br>Which statement correctly describes the components shown in the ATP synthase diagram?",
+                options: ["F<sub>0</sub> is embedded in membrane forming proton channel; F<sub>1</sub> protrudes into stroma facing side where ATP is synthesized", "F<sub>1</sub> forms channel in membrane; F<sub>0</sub> protrudes into lumen", "Both F<sub>0</sub> and F<sub>1</sub> are completely floating inside stroma", "F<sub>0</sub> synthesizes NADPH; F<sub>1</sub> oxidizes water"],
+                correct: 0
+            },
+            {
+                type: "diagram",
+                text: "<b>Diagram Question 90: Blackman's Law of Limiting Factors Graph</b><br><div class='diagram-box'>Rate of Photosynthesis ^<br>                        |       /-------- Region C<br>                        |      / Region B<br>                        |     / <br>                        |    / Region A<br>                        +---------------------------> Factor Intensity</div><br>In the graph above, what represents the limiting factor in <b>Region A</b> and <b>Region C</b>?",
+                options: ["Region A: Light intensity is limiting; Region C: Factor other than light becomes limiting", "Region A: Temperature is limiting; Region C: Light is limiting", "Region A: CO2 is limiting; Region C: Light is limiting", "Region A: Water is limiting; Region C: Temperature is limiting"],
+                correct: 0
+            }
+        ];
+
+        // State variables
+        let questions = [];
+        let userAnswers = {};
+        let reviewStatus = {};
+        let currentQuestionIdx = 0;
+        let timerInterval = null;
+        let timeLeft = 3600; // 60 minutes
+        let warningCount = 0;
+        let currentCaptcha = "";
+
+        // On Load Initializations
+        window.onload = function() {
+            generateCaptcha();
+            initWatermark();
+            setupAntiCheatListeners();
+        };
+
+        function generateCaptcha() {
+            const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+            currentCaptcha = "";
+            for (let i = 0; i < 6; i++) {
+                currentCaptcha += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            document.getElementById("captchaDisplay").innerText = currentCaptcha;
+        }
+
+        function initWatermark() {
+            const container = document.getElementById("watermarkContainer");
+            container.innerHTML = "";
+            for(let i=0; i<30; i++) {
+                const div = document.createElement("div");
+                div.className = "watermark-text";
+                div.innerText = "Soumendra Sir (8910587106)";
+                container.appendChild(div);
+            }
+        }
+
+        function setupAntiCheatListeners() {
+            // Disable right click, copy, paste, selection
+            document.addEventListener('copy', (e) => e.preventDefault());
+            document.addEventListener('cut', (e) => e.preventDefault());
+            document.addEventListener('paste', (e) => e.preventDefault());
+
+            // Detect Tab Switching
+            document.addEventListener("visibilitychange", function() {
+                if (document.hidden && document.getElementById("cbt-interface").style.display === "block") {
+                    warningCount++;
+                    alert(`PROCTORING ALERT (${warningCount}/3): Tab switching or window minimization detected! Security rules prohibit leaving the exam window.`);
+                    if (warningCount >= 3) {
+                        alert("Multiple proctoring violations detected. Exam is automatically submitting now.");
+                        submitExam();
+                    }
+                }
+            });
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const name = document.getElementById("candidateName").value.trim();
+            const pwd = document.getElementById("examPassword").value.trim();
+            const captcha = document.getElementById("captchaInput").value.trim();
+
+            // Validate password as today's date DDMMYYYY
+            const today = new Date();
+            const dd = String(today.getDate()).padStart(2, '0');
+            const mm = String(today.getMonth() + 1).padStart(2, '0');
+            const yyyy = today.getFullYear();
+            const expectedPwd = `${dd}${mm}${yyyy}`;
+
+            if (pwd !== expectedPwd) {
+                alert(`Invalid Exam Password! Required password format is today's date (DDMMYYYY).`);
+                return;
+            }
+
+            if (captcha.toUpperCase() !== currentCaptcha) {
+                alert("CAPTCHA verification failed! Please enter the correct code.");
+                generateCaptcha();
+                return;
+            }
+
+            // Shuffle raw questions deterministically for session
+            questions = shuffleArray([...rawQuestions]);
+            // Also shuffle options per question
+            questions.forEach(q => {
+                let optionsWithIdx = q.options.map((opt, idx) => ({ opt, idx }));
+                optionsWithIdx = shuffleArray(optionsWithIdx);
+                q.shuffledOptions = optionsWithIdx.map(o => o.opt);
+                q.correctShuffledIdx = optionsWithIdx.findIndex(o => o.idx === q.correct);
+            });
+
+            document.getElementById("dispCandidateName").innerText = name;
+            document.getElementById("auth-interface").style.display = "none";
+            document.getElementById("cbt-interface").style.display = "block";
+
+            // Request Fullscreen
+            if (document.documentElement.requestFullscreen) {
+                document.documentElement.requestFullscreen().catch(() => {});
+            }
+
+            renderPalette();
+            loadQuestion(0);
+            startTimer();
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                let m = Math.floor(timeLeft / 60);
+                let s = timeLeft % 60;
+                document.getElementById("timeDisplay").innerText = 
+                    `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    alert("Time's Up! Test is submitting automatically.");
+                    submitExam();
+                }
+            }, 1000);
+        }
+
+        function renderPalette() {
+            const grid = document.getElementById("dotsGrid");
+            grid.innerHTML = "";
+            for (let i = 0; i < questions.length; i++) {
+                const dot = document.createElement("div");
+                dot.className = "dot";
+                dot.id = `dot-${i}`;
+                dot.innerText = i + 1;
+                dot.onclick = () => loadQuestion(i);
+                grid.appendChild(dot);
+            }
+            updatePaletteDots();
+        }
+
+        function updatePaletteDots() {
+            for (let i = 0; i < questions.length; i++) {
+                const dot = document.getElementById(`dot-${i}`);
+                if (!dot) continue;
+                dot.className = "dot";
+                if (i === currentQuestionIdx) dot.classList.add("current");
+
+                if (userAnswers[i] !== undefined) {
+                    dot.classList.add("answered");
+                } else if (reviewStatus[i]) {
+                    dot.classList.add("marked");
+                } else if (dot.dataset.visited === "true") {
+                    dot.classList.add("skipped");
+                }
+            }
+        }
+
+        function loadQuestion(idx) {
+            currentQuestionIdx = idx;
+            const q = questions[idx];
+
+            document.getElementById("qNumberDisplay").innerText = `Question ${idx + 1} of ${questions.length}`;
+            document.getElementById("qTextDisplay").innerHTML = q.text;
+
+            const optsDiv = document.getElementById("optionsContainer");
+            optsDiv.innerHTML = "";
+
+            q.shuffledOptions.forEach((optText, oIdx) => {
+                const item = document.createElement("div");
+                item.className = "option-item" + (userAnswers[idx] === oIdx ? " selected" : "");
+                item.onclick = () => selectOption(idx, oIdx);
+
+                item.innerHTML = `
+                    <input type="radio" name="qOpt" ${userAnswers[idx] === oIdx ? "checked" : ""}>
+                    <span>${optText}</span>
+                `;
+                optsDiv.appendChild(item);
+            });
+
+            document.getElementById(`dot-${idx}`).dataset.visited = "true";
+            updatePaletteDots();
+
+            if (window.MathJax) {
+                MathJax.typesetPromise();
+            }
+        }
+
+        function selectOption(qIdx, oIdx) {
+            userAnswers[qIdx] = oIdx;
+            loadQuestion(qIdx);
+        }
+
+        function prevQuestion() {
+            if (currentQuestionIdx > 0) loadQuestion(currentQuestionIdx - 1);
+        }
+
+        function nextQuestion() {
+            if (currentQuestionIdx < questions.length - 1) loadQuestion(currentQuestionIdx + 1);
+        }
+
+        function markForReview() {
+            reviewStatus[currentQuestionIdx] = !reviewStatus[currentQuestionIdx];
+            updatePaletteDots();
+        }
+
+        function confirmSubmit() {
+            if (confirm("Are you sure you want to submit your test now?")) {
+                submitExam();
+            }
+        }
+
+        function submitExam() {
+            clearInterval(timerInterval);
+
+            let correctCount = 0;
+            let wrongCount = 0;
+            let unattemptedCount = 0;
+
+            questions.forEach((q, idx) => {
+                if (userAnswers[idx] === undefined) {
+                    unattemptedCount++;
+                } else if (userAnswers[idx] === q.correctShuffledIdx) {
+                    correctCount++;
+                } else {
+                    wrongCount++;
+                }
+            });
+
+            const totalScore = (correctCount * 4) - (wrongCount * 1);
+
+            document.getElementById("cbt-interface").style.display = "none";
+            document.getElementById("result-interface").style.display = "block";
+
+            document.getElementById("resName").innerText = document.getElementById("candidateName").value;
+            document.getElementById("resScore").innerText = `${totalScore} / 360`;
+            document.getElementById("resBreakdown").innerText = `Correct: ${correctCount} (+${correctCount*4}) | Incorrect: ${wrongCount} (-${wrongCount}) | Unattempted: ${unattemptedCount}`;
+
+            renderFeedbackChart(correctCount, wrongCount, unattemptedCount);
+        }
+
+        function renderFeedbackChart(c, w, u) {
+            const ctx = document.getElementById('feedbackChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Correct (+4)', 'Incorrect (-1)', 'Unattempted (0)'],
+                    datasets: [{
+                        data: [c, w, u],
+                        backgroundColor: ['#28a745', '#dc3545', '#6c757d']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { position: 'bottom' },
+                        title: { display: true, text: 'Candidate Performance Graphical Breakdown' }
+                    }
+                }
+            });
+        }
+
+        function generateAndSendPNG() {
+            const canvas = document.getElementById('certificate-canvas');
+            const ctx = canvas.getContext('2d');
+            const name = document.getElementById("candidateName").value;
+            const scoreText = document.getElementById("resScore").innerText;
+            const breakdown = document.getElementById("resBreakdown").innerText;
+
+            // Background
+            ctx.fillStyle = "#ffffff";
+            ctx.fillRect(0, 0, 800, 600);
+
+            // Border
+            ctx.strokeStyle = "#0056b3";
+            ctx.lineWidth = 10;
+            ctx.strokeRect(20, 20, 760, 560);
+
+            // Watermark
+            ctx.fillStyle = "rgba(0,0,0,0.04)";
+            ctx.font = "bold 38px Segoe UI";
+            ctx.fillText("SOUMENDRA SIR'S BIOLOGY CLASSES", 60, 300);
+
+            // Title
+            ctx.fillStyle = "#0056b3";
+            ctx.font = "bold 26px Segoe UI";
+            ctx.textAlign = "center";
+            ctx.fillText("Soumendra Sir's Biology Classes-8910587106", 400, 80);
+
+            ctx.fillStyle = "#333333";
+            ctx.font = "20px Segoe UI";
+            ctx.fillText("NEET BIOLOGY XI EXAM SERIES 7 SET A", 400, 120);
+            ctx.fillText("Official Computer-Based Test (CBT) Scorecard", 400, 150);
+
+            // Line
+            ctx.beginPath();
+            ctx.moveTo(100, 180);
+            ctx.lineTo(700, 180);
+            ctx.strokeStyle = "#cccccc";
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // Details
+            ctx.textAlign = "left";
+            ctx.font = "bold 22px Segoe UI";
+            ctx.fillStyle = "#000000";
+            ctx.fillText(`Candidate Name: ${name}`, 100, 240);
+            ctx.fillText(`Exam Date: ${new Date().toLocaleDateString()}`, 100, 280);
+
+            // Score Box
+            ctx.fillStyle = "#f8f9fa";
+            ctx.fillRect(100, 320, 600, 120);
+            ctx.strokeStyle = "#28a745";
+            ctx.strokeRect(100, 320, 600, 120);
+
+            ctx.fillStyle = "#28a745";
+            ctx.font = "bold 36px Segoe UI";
+            ctx.textAlign = "center";
+            ctx.fillText(`Total Score: ${scoreText}`, 400, 370);
+
+            ctx.fillStyle = "#555555";
+            ctx.font = "18px Segoe UI";
+            ctx.fillText(breakdown, 400, 410);
+
+            // Verification Stamp
+            ctx.fillStyle = "#dc3545";
+            ctx.font = "italic 16px Segoe UI";
+            ctx.fillText("Verified Anti-Tamper Digital CBT Scorecard", 400, 500);
+            ctx.fillText("Send downloaded scorecard image to WhatsApp: 8910587106", 400, 530);
+
+            const dataUrl = canvas.toDataURL("image/png");
+            
+            // Trigger image download
+            const a = document.createElement("a");
+            a.href = dataUrl;
+            a.download = `${name}_NEET_Photosynthesis_Scorecard.png`;
+            a.click();
+
+            // Redirect to WhatsApp with pre-filled message
+            const waMsg = encodeURIComponent(`Hello Soumendra Sir, I have completed my test (NEET BIOLOGY XI EXAM SERIES 7 SET A).\nCandidate: ${name}\nScore: ${scoreText}\nAttached is my downloaded anti-tamper scorecard PNG.`);
+            window.open(`https://wa.me/918910587106?text=${waMsg}`, '_blank');
+        }
+    </script>
+</body>
+</html>
